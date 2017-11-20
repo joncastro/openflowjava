@@ -297,6 +297,7 @@ abstract class AbstractOutboundQueueManager<T extends OutboundQueueHandler, O ex
         // If the channel is gone, just flush whatever is not completed
         if (!shuttingDown) {
             LOG.trace("Dequeuing messages to channel {}", parent.getChannel());
+            LOG.debug("telstra(v_20171113_113854): Dequeueing messages to channel {} | Is Channel Writable? {}", parent.getChannel(), parent.getChannel().isWritable());
             writeAndFlush();
             rescheduleFlush();
         } else {
@@ -312,6 +313,7 @@ abstract class AbstractOutboundQueueManager<T extends OutboundQueueHandler, O ex
 
     private void scheduleFlush() {
         if (flushScheduled.compareAndSet(false, true)) {
+            LOG.debug("telstra(v_20171113_113854): Scheduling Flush: Is Channel Writable? {}", parent.getChannel().isWritable());
             LOG.trace("Scheduling flush task on channel {}", parent.getChannel());
             parent.getChannel().eventLoop().execute(flushRunnable);
         } else {
